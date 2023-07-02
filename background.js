@@ -16,22 +16,29 @@ function blobToDataUrl(blob) {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
 
-  if (info.mediaType === "image") {
-    let img = await fetch(info.srcUrl);
-    let blob = await img.blob();
-    let dataURL = await blobToDataUrl(blob);
-    console.log(dataURL);
+  if (info.menuItemId === "onImageContextMenu") {
+    if (info.mediaType === "image") {
+      let img = await fetch(info.srcUrl);
+      let blob = await img.blob();
+      let dataURL = await blobToDataUrl(blob);
+      console.log(dataURL);
 
-    let config = {"files":[dataURL], "environment":{}};
-    let encodedConfig = encodeURI(JSON.stringify(config));
+      let config = {"files":[dataURL], "environment":{}};
+      let encodedConfig = encodeURI(JSON.stringify(config));
 
-    const photopeaUrl = "https://www.photopea.com";
-    chrome.tabs.sendMessage(
-      tab.id,
-      {
-        event: "sendToPhotopea",
-        data: photopeaUrl + "#" + encodedConfig,
-      }
-    );
+      const photopeaUrl = "https://www.photopea.com";
+      
+      chrome.tabs.create({
+        url: photopeaUrl + "#" + encodedConfig,
+      });
+      
+      // chrome.tabs.sendMessage(
+      //   tab.id,
+      //   {
+      //     event: "sendToPhotopea",
+      //     data: photopeaUrl + "#" + encodedConfig,
+      //   }
+      // );
+    }
   }
 });
