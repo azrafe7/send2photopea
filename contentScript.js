@@ -3,8 +3,10 @@
     console.log("[Send2Photopea:CTX]", msg);
     const { event, data } = msg;
 
-    if (event === "sendToPhotopea") {
-      window.open(data, '_blank');
+	const photopeaUrl = "https://www.photopea.com";
+	
+	if (event === "sendToPhotopea") {
+      window.open(photopeaUrl + "#" + data, '_blank');
     }
   });
 })();
