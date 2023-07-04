@@ -1,6 +1,6 @@
 {
   "name": "Send2Photopea",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Send image/video to Photopea",
   "manifest_version": 3,
   "permissions": ["storage", "tabs", "contextMenus", "scripting"],
@@ -43,7 +43,6 @@
       "48": "assets/icon48.png",
       "128": "assets/icon128.png"
     },
-    "default_title": "Popup",
-    "default_popup": "popup.html"
+    "default_title": "Send2Photopea"
   }
 }
