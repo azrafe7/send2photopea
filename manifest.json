@@ -10,8 +10,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "all_frames": true
+      "js": ["contentScript.js"]
     }
   ],
   "cross_origin_opener_policy": {

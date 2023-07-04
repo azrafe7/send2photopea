@@ -31,27 +31,32 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       chrome.tabs.create({url: photopeaUrl}, (tab) => {
         chrome.scripting.executeScript({
-          target: {tabId: tab.id, allFrames: true,},
+          target: {tabId: tab.id},
           args: [dataURL],
           func: (dataURL) => {
-            let firstTime = true;
+            let photopeaInited = false;
             
-            function openDataURL() {
-              console.log(window.onmessage);
-              if (window.onmessage) {
-                console.log("[Send2Photopea:PP] open dataURL", dataURL);
-                console.log("[Send2Photopea:PP]", window.onmessage);
-                window.postMessage(`puppa`, "*");
-                window.postMessage(`app.open('${dataURL}')`, "*");
+            window.addEventListener("message", (e) => {
+              // alert(e.data);
+              // console.log(e);
+              if (e.data?.type === "HelloMessage") {
+                console.log("[Send2Photopea:PP] INITED");
+                photopeaInited = true;
+              };
+            });
+            
+            let message = `app.open("${dataURL}")`;
+            // console.log("[Send2Photopea:PP] tryPostMessage\n" + message);
+            
+            function tryPostMessage() {
+              if (photopeaInited) {
+                console.log("[Send2Photopea:PP] postMessage\n" + message);
+                window.postMessage(message, "*");
               } else {
-                if (firstTime) {
-                  console.log("[Send2Photopea:PP] waiting for window.onMessage handler");
-                }
-                window.setTimeout(openDataURL, 100);
+                setTimeout(tryPostMessage, 100);
               }
             }
-              
-            openDataURL();
+            tryPostMessage();
           },
         })
         .then(() => {
