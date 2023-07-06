@@ -1,11 +1,15 @@
 # send2photopea
-Send image to Photopea
+Send image to Photopea Chrome Extension
 
-# desc
+![alt text](./webstore_assets/screenshot_01.png "Screenshot")
+
+You can find it here: https://chrome.google.com/webstore/detail/send2photopea/ngjdphpkaopdenfbgkkkgmajgcmhpkme
+
+# Overview
 Right-click and send images right to Photopea, for fast editing.
 
 Browse and edit your images, faster.
 
-PS: working on sending to a new Layer (and on video screenshots). Stay tuned... :P
+PS: working on sending to a new Layer (and to send video frame screenshots). Stay tuned... :P
 
-DISCLAIMER: I'm not affiliated with Photopea, just a happy user of it. :D
+DISCLAIMER: I'm not affiliated with Photopea, just a big fan of it. :D
