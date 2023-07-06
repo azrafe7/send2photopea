@@ -61,6 +61,7 @@ async function focusTab(tab) {
   });
 }
 
+// get first Photopea tab, or open a new one
 async function getPhotopeaTab() {
   let queryOptions = { url: "https://www.photopea.com/" };
   let isInited = true;
@@ -106,7 +107,7 @@ async function sendAsDataURL(info, tab) {
   // console.log(photopeaTab, isInited);
   await focusTab(photopeaTab);
 
-  let message = `app.open("${dataURL}")`;
+  let message = `app.open('${dataURL}')`;
 
   if (!isInited) {
     waitForPhotopeaInitAndPostMessage(photopeaTab, message);
@@ -115,7 +116,22 @@ async function sendAsDataURL(info, tab) {
   }
 }
 
-function sendAsFile(info, tab) {
+async function sendAsUrl(info, tab) {
+  let {photopeaTab, isInited} = await getPhotopeaTab();
+  // console.log(photopeaTab, isInited);
+  await focusTab(photopeaTab);
+
+  let message = `app.open('${info.srcUrl}')`;
+
+  if (!isInited) {
+    waitForPhotopeaInitAndPostMessage(photopeaTab, message);
+  } else {
+    postMessage(photopeaTab, message);
+  }
+}
+
+// open new tab, make Photopea load `info.srcUrl`
+function openNewAsUrl(info, tab) {
   let config = {"files":[info.srcUrl], "environment":{}};
   let encodedConfig = encodeURI(JSON.stringify(config));
 
@@ -131,9 +147,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.mediaType === "image") {
 
       // on the webstore page no content script is injected
-      // so we sendAsFile directly
+      // so we sendAsUrl directly
       if (tab.url.startsWith("https://chrome.google.com/webstore")) {
-        sendAsFile(info, tab);
+        sendAsUrl(info, tab);
       } else {
         chrome.tabs.sendMessage(
           tab.id,
@@ -146,7 +162,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             if (response.sendAs === "dataURL") {
               sendAsDataURL(info, tab);
             } else {
-              sendAsFile(info, tab);
+              sendAsUrl(info, tab);
             }
           }
         );
