@@ -31,7 +31,7 @@ async function sendAsDataURL(info, tab) {
       args: [dataURL],
       func: (dataURL) => {
         let photopeaInited = false;
-        
+
         window.addEventListener("message", (e) => {
           // alert(e.data);
           // console.log(e);
@@ -40,10 +40,10 @@ async function sendAsDataURL(info, tab) {
             photopeaInited = true;
           };
         });
-        
+
         let message = `app.open("${dataURL}")`;
         // console.log("[Send2Photopea:PP] tryPostMessage\n" + message);
-        
+
         function tryPostMessage() {
           if (photopeaInited) {
             console.log("[Send2Photopea:PP] postMessage\n" + message);
@@ -76,8 +76,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "onImageContextMenu") {
     if (info.mediaType === "image") {
       
-       // on the webstore page no content script is injected
-       // so we sendAsFile directly
+      // on the webstore page no content script is injected
+      // so we sendAsFile directly
       if (tab.url.startsWith("https://chrome.google.com/webstore")) {
         sendAsFile(info, tab);
       } else {

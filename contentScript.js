@@ -14,7 +14,8 @@
       console.log(e);
       response = {sendAs: "dataURL"};
     }
-    
+
+    console.log("[Send2Photopea:CTX] send as " + response?.sendAs);
     return response;
   }
 
@@ -23,12 +24,12 @@
     const { event, data } = msg;
 
     const photopeaUrl = "https://www.photopea.com";
-	
-    
+
+
     if (event === "sendToPhotopea") {
       fetchData(data.srcUrl).then(sendResponse);
     }
-    
+
     return true; // keep port alive
   });
 })();
