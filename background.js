@@ -61,35 +61,42 @@ async function sendAsDataURL(info, tab) {
   });
 }
 
+function sendAsFile(info, tab) {
+  let config = {"files":[info.srcUrl], "environment":{}};
+  let encodedConfig = encodeURI(JSON.stringify(config));
+
+  chrome.tabs.create({
+    url: photopeaUrl + "#" + encodedConfig,
+  });
+}
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
 
   if (info.menuItemId === "onImageContextMenu") {
     if (info.mediaType === "image") {
-            
-      chrome.tabs.sendMessage(
-        tab.id,
-        {
-          event: "sendToPhotopea",
-          data: info,
-        }
-        
-        ,
-        function(response) {
-          console.log("[Send2Photopea:BG] send as " + response?.sendAs);
-          if (response.sendAs === "dataURL") {
-            sendAsDataURL(info, tab);
-          } else {
-            let config = {"files":[info.srcUrl], "environment":{}};
-            let encodedConfig = encodeURI(JSON.stringify(config));
-
-            chrome.tabs.create({
-              url: photopeaUrl + "#" + encodedConfig,
-            });
+      
+       // on the webstore page no content script is injected
+       // so we sendAsFile directly
+      if (tab.url.startsWith("https://chrome.google.com/webstore")) {
+        sendAsFile(info, tab);
+      } else {
+        chrome.tabs.sendMessage(
+          tab.id,
+          {
+            event: "sendToPhotopea",
+            data: info,
+          },
+          function(response) {
+            console.log("[Send2Photopea:BG] send as " + response?.sendAs);
+            if (response.sendAs === "dataURL") {
+              sendAsDataURL(info, tab);
+            } else {
+              sendAsFile(info, tab);
+            }
           }
-        }
-      );
+        );
+      }
     }
   }
 });
