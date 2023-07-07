@@ -170,3 +170,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
   }
 });
+
+async function openPhotopea() {
+  let {photopeaTab, isInited} = await getPhotopeaTab();
+  // console.log(photopeaTab, isInited);
+  await focusTab(photopeaTab);
+}
+
+// open Photopea when clicking the browser action
+chrome.action.onClicked.addListener((tab) => {
+  openPhotopea();
+});
