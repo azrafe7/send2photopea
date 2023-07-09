@@ -3,12 +3,18 @@ console.log(manifest.name + " v" + manifest.version);
 
 const photopeaUrl = "https://www.photopea.com";
 
+function createContextMenu() {
+  chrome.contextMenus.removeAll(function() {
+    chrome.contextMenus.create({
+      id: "onImageContextMenu",
+      title: "Send to Photopea",
+      contexts: ["image", "video"],
+    });
+  });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-	chrome.contextMenus.create({
-	  id: "onImageContextMenu",
-	  title: "Send to Photopea",
-	  contexts: ["image"],
-	});
+  createContextMenu();
 });
 
 function blobToDataUrl(blob) {
@@ -68,11 +74,12 @@ async function getPhotopeaTab() {
 
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [photopeaTab] = await chrome.tabs.query(queryOptions);
+  let [activeTab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
   if (photopeaTab === undefined) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
     return new Promise((resolve, reject) => {
       isInited = false;
-      chrome.tabs.create({url: photopeaUrl}, (tab) => {
+      chrome.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
         console.log(`[Send2Photopea:BG] opened new Photopea tab (idx: ${tab.index})`);
         resolve({photopeaTab: tab, isInited: isInited});
       });
@@ -97,15 +104,18 @@ function postMessage(photopeaTab, message) {
   });
 }
 
-async function sendAsDataURL(info, tab) {
-  let img = await fetch(info.srcUrl);
-  let blob = await img.blob();
-  let dataURL = await blobToDataUrl(blob);
-  console.log(dataURL);
-
+async function sendAsDataURL(info, tab, dataURL) {
   let {photopeaTab, isInited} = await getPhotopeaTab();
   // console.log(photopeaTab, isInited);
   await focusTab(photopeaTab);
+
+  let blob = null;
+  if (!dataURL) {
+    let img = await fetch(info.srcUrl);
+    blob = await img.blob();
+  }
+  dataURL = dataURL ?? await blobToDataUrl(blob);
+  console.log(dataURL);
 
   let message = `app.open('${dataURL}')`;
 
@@ -142,9 +152,9 @@ function openNewAsUrl(info, tab) {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
+  console.log(info.mediaType, info.srcUrl);
 
   if (info.menuItemId === "onImageContextMenu") {
-    if (info.mediaType === "image") {
 
       // on the webstore page no content script is injected
       // so we sendAsUrl directly
@@ -158,16 +168,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             data: info,
           },
           function(response) {
-            console.log("[Send2Photopea:BG] send as " + response?.sendAs);
+            console.log("[Send2Photopea:BG] send as " + response.sendAs);
+            console.log(response);
             if (response.sendAs === "dataURL") {
-              sendAsDataURL(info, tab);
+              sendAsDataURL(info, tab, response.dataURL);
             } else {
               sendAsUrl(info, tab);
             }
           }
         );
       }
-    }
+
   }
 });
 
