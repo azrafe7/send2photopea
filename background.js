@@ -113,8 +113,10 @@ async function sendAsDataURL(info, tab, dataURL) {
 
   let blob = null;
   if (!dataURL) {
-    let img = await fetch(info.srcUrl);
-    blob = await img.blob();
+    if (info.mediaType === 'image') {
+      let img = await fetch(info.srcUrl);
+      blob = await img.blob();
+    }
   }
   dataURL = dataURL ?? await blobToDataUrl(blob);
   console.log(dataURL);
@@ -203,5 +205,5 @@ async function takeScreenshot() {
 chrome.action.onClicked.addListener(async (tab) => {
   // openPhotopea();
   let dataURL = await takeScreenshot();
-  sendAsDataURL(null, tab, dataURL);
+  sendAsDataURL({mediaType: 'image'}, tab, dataURL);
 });
