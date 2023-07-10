@@ -11,6 +11,10 @@ If you have an instance of Photopea open, the image will be sent there.
 
 Browse and edit your images, faster.
 
+Should work for Image Elements, and Video Elements too. ;D
+(but not yet for those with overlay elements)
+
+Now you can also click on the extension button to send a screenshot to Photopea.
 
 CHANGELOG: https://github.com/azrafe7/send2photopea/blob/main/CHANGELOG.md
 

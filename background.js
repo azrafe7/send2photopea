@@ -1,3 +1,5 @@
+"use strict";
+
 let manifest = chrome.runtime.getManifest();
 console.log(manifest.name + " v" + manifest.version);
 
@@ -69,7 +71,7 @@ async function focusTab(tab) {
 
 // get first Photopea tab, or open a new one
 async function getPhotopeaTab() {
-  let queryOptions = { url: "https://www.photopea.com/" };
+  let queryOptions = {url: "https://www.photopea.com/"};
   let isInited = true;
 
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
@@ -188,7 +190,18 @@ async function openPhotopea() {
   await focusTab(photopeaTab);
 }
 
+async function takeScreenshot() {
+  let dataURL = await chrome.tabs.captureVisibleTab(null, {
+      format: 'png'
+    },
+  );
+  return dataURL;
+}
+
+// take a screenshot of active tab and 
 // open Photopea when clicking the browser action
-chrome.action.onClicked.addListener((tab) => {
-  openPhotopea();
+chrome.action.onClicked.addListener(async (tab) => {
+  // openPhotopea();
+  let dataURL = await takeScreenshot();
+  sendAsDataURL(null, tab, dataURL);
 });
