@@ -1,5 +1,9 @@
  # CHANGELOG
 
+ ### v0.1.6 (11 Aug 2023)
+ - remove "storage" permission (no more used)
+ - fill medaiType on screenshot too
+
  ### v0.1.5 (10 Aug 2023)
  - send active tab screenshot
  - "use strict"
