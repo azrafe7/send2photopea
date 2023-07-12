@@ -33,19 +33,18 @@ async function waitForPhotopeaInitAndPostMessage(tab, message) {
       target: {tabId: tab.id},
       args: [message],
       func: (message) => {
-        let photopeaInited = false;
 
         window.addEventListener("message", (e) => {
           // alert("[Send2Photopea:PP]\n" + e.data);
           console.log("[Send2Photopea:PP]", e);
           if (e.data?.type === "HelloMessage") {
             console.log("[Send2Photopea:PP] INITED");
-            photopeaInited = true;
+            window._photopeaInited = true;
           }
         });
 
         function tryPostMessage() {
-          if (photopeaInited) {
+          if (window._photopeaInited) {
             console.log("[Send2Photopea:PP] wait and postMessage\n" + message);
             window.postMessage(message, "*");
           } else {
@@ -72,7 +71,6 @@ async function focusTab(tab) {
 // get first Photopea tab, or open a new one
 async function getPhotopeaTab() {
   let queryOptions = {url: "https://www.photopea.com/"};
-  let isInited = true;
 
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [photopeaTab] = await chrome.tabs.query(queryOptions);
@@ -80,16 +78,15 @@ async function getPhotopeaTab() {
   if (photopeaTab === undefined) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
     return new Promise((resolve, reject) => {
-      isInited = false;
       chrome.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
         console.log(`[Send2Photopea:BG] opened new Photopea tab (idx: ${tab.index})`);
-        resolve({photopeaTab: tab, isInited: isInited});
+        resolve({photopeaTab: tab});
       });
     });
   }
 
   console.log(`[Send2Photopea:BG] found open Photopea tab (idx: ${photopeaTab.index})`);
-  return {photopeaTab: photopeaTab, isInited: isInited};
+  return {photopeaTab: photopeaTab};
 }
 
 function postMessage(photopeaTab, message) {
@@ -107,8 +104,8 @@ function postMessage(photopeaTab, message) {
 }
 
 async function sendAsDataURL(info, tab, dataURL) {
-  let {photopeaTab, isInited} = await getPhotopeaTab();
-  // console.log(photopeaTab, isInited);
+  let {photopeaTab} = await getPhotopeaTab();
+  // console.log(photopeaTab);
   await focusTab(photopeaTab);
 
   let blob = null;
@@ -123,25 +120,17 @@ async function sendAsDataURL(info, tab, dataURL) {
 
   let message = `app.open('${dataURL}')`;
 
-  if (!isInited) {
-    waitForPhotopeaInitAndPostMessage(photopeaTab, message);
-  } else {
-    postMessage(photopeaTab, message);
-  }
+  waitForPhotopeaInitAndPostMessage(photopeaTab, message);
 }
 
 async function sendAsUrl(info, tab) {
-  let {photopeaTab, isInited} = await getPhotopeaTab();
-  // console.log(photopeaTab, isInited);
+  let {photopeaTab} = await getPhotopeaTab();
+  // console.log(photopeaTab);
   await focusTab(photopeaTab);
 
   let message = `app.open('${info.srcUrl}')`;
 
-  if (!isInited) {
-    waitForPhotopeaInitAndPostMessage(photopeaTab, message);
-  } else {
-    postMessage(photopeaTab, message);
-  }
+  waitForPhotopeaInitAndPostMessage(photopeaTab, message);
 }
 
 // open new tab, make Photopea load `info.srcUrl`
@@ -187,8 +176,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 async function openPhotopea() {
-  let {photopeaTab, isInited} = await getPhotopeaTab();
-  // console.log(photopeaTab, isInited);
+  let {photopeaTab} = await getPhotopeaTab();
+  // console.log(photopeaTab);
   await focusTab(photopeaTab);
 }
 

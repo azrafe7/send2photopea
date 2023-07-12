@@ -1,6 +1,14 @@
  # CHANGELOG
 
+ ### v0.1.8 (12 Aug 2023)
+ - send images with dataURL src directly
+ - more reliably detect if Photopea is inited
+
+ ### v0.1.7 (11 Aug 2023)
+ - send pages starting with "data:url"
+
  ### v0.1.6 (11 Aug 2023)
+ - send pages starting with "data:url"
  - remove "storage" permission (no more used)
  - fill mediaType on screenshot too
 
