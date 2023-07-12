@@ -161,8 +161,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "onImageContextMenu") {
 
       // on the webstore page no content script is injected
-      // so we sendAsUrl directly
-      if (tab.url.startsWith("https://chrome.google.com/webstore")) {
+      // so we sendAsUrl directly (also for inage dataUrls)
+      if (tab.url.startsWith("https://chrome.google.com/webstore") || tab.url.startsWith("data:image")) {
         sendAsUrl(info, tab);
       } else {
         chrome.tabs.sendMessage(
