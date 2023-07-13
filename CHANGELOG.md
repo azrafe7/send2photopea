@@ -1,8 +1,9 @@
  # CHANGELOG
 
- ### v0.1.8 (12 Aug 2023)
- - send images with dataURL src directly
- - more reliably detect if Photopea is inited
+ ### v0.1.8 (13 Aug 2023)
+ - disable contextMenu on new-tab-page
+ - send images with a data:image src directly
+ - more reliably detect if Photopea is inited (now should work also when Photopea has been open from outside the extension)
 
  ### v0.1.7 (11 Aug 2023)
  - send pages starting with "data:url"
