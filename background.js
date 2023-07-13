@@ -8,7 +8,7 @@ const photopeaUrl = "https://www.photopea.com";
 function createContextMenu() {
   chrome.contextMenus.removeAll(function() {
     chrome.contextMenus.create({
-      id: "onImageContextMenu",
+      id: "Send2Photopea_onImageContextMenu",
       title: "Send to Photopea",
       contexts: ["image", "video"],
     });
@@ -37,17 +37,22 @@ async function waitForPhotopeaInitAndPostMessage(tab, message) {
         window.addEventListener("message", (e) => {
           // alert("[Send2Photopea:PP]\n" + e.data);
           console.log("[Send2Photopea:PP]", e);
-          if (e.data?.type === "HelloMessage") {
+          if (e.data == "inited") {
             console.log("[Send2Photopea:PP] INITED");
             window._photopeaInited = true;
           }
         });
 
+        if (!window._photopeaInited) {
+          console.log("[Send2Photopea:PP] wait for init...");
+        }
+        
         function tryPostMessage() {
           if (window._photopeaInited) {
-            console.log("[Send2Photopea:PP] wait and postMessage\n" + message);
+            console.log("[Send2Photopea:PP] postMessage\n" + message);
             window.postMessage(message, "*");
           } else {
+            window.postMessage("inited", "*");
             setTimeout(tryPostMessage, 100);
           }
         }
@@ -147,7 +152,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
   console.log(info.mediaType, info.srcUrl);
 
-  if (info.menuItemId === "onImageContextMenu") {
+  if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
 
       // on the webstore page no content script is injected
       // so we sendAsUrl directly (also for inage dataUrls)
@@ -161,6 +166,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             data: info,
           },
           function(response) {
+            if (response == null) {
+              response = { sendAs: "asDataURL" };
+              console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
+            }
             console.log("[Send2Photopea:BG] send as " + response.sendAs);
             console.log(response);
             if (response.sendAs === "dataURL") {
