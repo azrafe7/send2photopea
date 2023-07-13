@@ -19,6 +19,22 @@ chrome.runtime.onInstalled.addListener(() => {
   createContextMenu();
 });
 
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // console.log(tabId, changeInfo, tab);
+
+  if (changeInfo.status == 'loading') {
+    const enabled = changeInfo.url !== "chrome://newtab/";
+    if (changeInfo.url === "chrome://newtab/") {
+      console.warn("[Send2Photopea:BG] disabled on new-tab-page");
+    }
+    // console.log('set to ', enabled);
+    chrome.contextMenus.update(
+      "Send2Photopea_onImageContextMenu",
+      { enabled: enabled },
+    );
+  }
+});
+
 function blobToDataUrl(blob) {
   return new Promise(r => {
     let a = new FileReader();
@@ -46,7 +62,7 @@ async function waitForPhotopeaInitAndPostMessage(tab, message) {
         if (!window._photopeaInited) {
           console.log("[Send2Photopea:PP] wait for init...");
         }
-        
+
         function tryPostMessage() {
           if (window._photopeaInited) {
             console.log("[Send2Photopea:PP] postMessage\n" + message);
@@ -198,7 +214,7 @@ async function takeScreenshot() {
   return dataURL;
 }
 
-// take a screenshot of active tab and 
+// take a screenshot of active tab and
 // open Photopea when clicking the browser action
 chrome.action.onClicked.addListener(async (tab) => {
   // openPhotopea();
