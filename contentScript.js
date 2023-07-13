@@ -31,7 +31,8 @@
         }
       } else {
         console.log("[Send2Photopea:CTX] don't try to fetch " + url);
-        response = {sendAs: "dataURL"};
+        let dataURL = url.startsWith("data:image") ? url : null;
+        response = {sendAs: "dataURL", dataURL: dataURL};
       }
     } else if (mediaType === 'video') {
       if (clickedElement && clickedElement.tagName.toUpperCase() === 'VIDEO') {
