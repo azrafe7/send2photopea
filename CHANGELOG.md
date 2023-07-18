@@ -1,5 +1,8 @@
  # CHANGELOG
 
+ ### v0.1.9 (18 Aug 2023)
+ - remove tabs permission (should work without changes)
+
  ### v0.1.8 (13 Aug 2023)
  - disable contextMenu on new-tab-page
  - send images with a data:image src directly

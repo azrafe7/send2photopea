@@ -1,9 +1,9 @@
 {
   "name": "Send2Photopea",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Send image to Photopea",
   "manifest_version": 3,
-  "permissions": ["tabs", "activeTab", "contextMenus", "scripting"],
+  "permissions": ["activeTab", "contextMenus", "scripting"],
   "background": {
     "service_worker": "background.js"
   },
