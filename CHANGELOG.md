@@ -1,5 +1,8 @@
  # CHANGELOG
 
+ ### v0.1.10 (18 Aug 2023)
+ - remove "cross_origin_opener_policy" directive
+
  ### v0.1.9 (18 Aug 2023)
  - remove tabs permission (should work without changes)
 
@@ -9,10 +12,9 @@
  - more reliably detect if Photopea is inited (now should work also when Photopea has been open from outside the extension)
 
  ### v0.1.7 (11 Aug 2023)
- - send pages starting with "data:url"
+ - send pages with url starting with "data:image"
 
  ### v0.1.6 (11 Aug 2023)
- - send pages starting with "data:url"
  - remove "storage" permission (no more used)
  - fill mediaType on screenshot too
 
