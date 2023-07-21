@@ -1,7 +1,10 @@
  # CHANGELOG
 
- ### v0.1.10 (18 Aug 2023)
+ ### v0.1.10 (21 Aug 2023)
  - remove "cross_origin_opener_policy" directive
+ - wait for tab to load when opening new Photopea tab
+ - split manifest for chrome and firefox
+ - should be ready to be uploaded as a Firefox Add-On
 
  ### v0.1.9 (18 Aug 2023)
  - remove tabs permission (should work without changes)
