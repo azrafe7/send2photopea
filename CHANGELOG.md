@@ -4,6 +4,8 @@
  - remove "cross_origin_opener_policy" directive
  - wait for tab to load when opening new Photopea tab
  - split manifest for chrome and firefox
+ - add "browser_specific_settings"
+ - stick to chrome. API (for firefox too, for the moment)
  - should be ready to be uploaded as a Firefox Add-On
 
  ### v0.1.9 (18 Aug 2023)
