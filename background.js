@@ -99,7 +99,7 @@ async function getPhotopeaTab() {
   if (photopeaTab === undefined) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
     return new Promise((resolve, reject) => {
-      browser.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
+      chrome.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
         chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
           if (info.status === 'complete' && tabId === tab.id) {
             console.log(`[Send2Photopea:BG] opened new Photopea tab (idx: ${tab.index})`);
