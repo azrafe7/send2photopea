@@ -5,7 +5,7 @@
   "manifest_version": 3,
   "permissions": ["activeTab", "contextMenus", "scripting"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
@@ -31,5 +31,10 @@
       "128": "assets/icon128.png"
     },
     "default_title": "Send2Photopea"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "send2photopea@ngjdphpkaopdenfbgkkkgmajgcmhpkme"
+    }
   }
 }
