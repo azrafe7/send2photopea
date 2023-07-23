@@ -1,5 +1,10 @@
  # CHANGELOG
 
+ ### v0.1.11 (23 Aug 2023)
+ - run in all_frames
+ - better handle videos (find video at clicked location)
+ - only send response if response !== false (no valid target found)
+ 
  ### v0.1.10 (21 Aug 2023)
  - remove "cross_origin_opener_policy" directive
  - wait for tab to load when opening new Photopea tab
