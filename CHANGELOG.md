@@ -4,6 +4,7 @@
  - run in all_frames
  - better handle videos (find video at clicked location)
  - only send response if response !== false (no valid target found)
+ - [firefox] remove "tabs" permission ("activeTab" should suffice)
  
  ### v0.1.10 (21 Aug 2023)
  - remove "cross_origin_opener_policy" directive
