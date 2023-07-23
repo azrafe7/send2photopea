@@ -90,13 +90,13 @@ async function focusTab(tab) {
 }
 
 // get first Photopea tab, or open a new one
-async function getPhotopeaTab() {
+async function getPhotopeaTab(options) {
   let queryOptions = {url: "https://www.photopea.com/"};
 
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [photopeaTab] = await chrome.tabs.query(queryOptions);
   let [activeTab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-  if (photopeaTab === undefined) {
+  if (photopeaTab === undefined || options?.openNew === true) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
     return new Promise((resolve, reject) => {
       chrome.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
@@ -130,7 +130,7 @@ function postMessage(photopeaTab, message) {
 }
 
 async function sendAsDataURL(info, tab, dataURL) {
-  let {photopeaTab} = await getPhotopeaTab();
+  let {photopeaTab} = await getPhotopeaTab({openNew:false});
   // console.log(photopeaTab);
   await focusTab(photopeaTab);
 
@@ -187,9 +187,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             data: info,
           },
           function(response) {
-            if (response == null) {
+            if (response === null) {
               response = { sendAs: "asDataURL" };
               console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
+            } else if (response === false) {
+              console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
+              return;
             }
             console.log("[Send2Photopea:BG] send as " + response.sendAs);
             console.log(response);

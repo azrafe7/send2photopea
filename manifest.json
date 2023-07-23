@@ -3,14 +3,15 @@
   "version": "0.1.10",
   "description": "Send image to Photopea",
   "manifest_version": 3,
-  "permissions": ["tabs", "activeTab", "contextMenus", "scripting"],
+  "permissions": ["activeTab", "contextMenus", "scripting"],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.js"],
+      "all_frames": true
     }
   ],
   "host_permissions": [
@@ -30,10 +31,5 @@
       "128": "assets/icon128.png"
     },
     "default_title": "Send2Photopea"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "send2photopea@ngjdphpkaopdenfbgkkkgmajgcmhpkme"
-    }
   }
 }
