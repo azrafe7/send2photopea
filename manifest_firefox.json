@@ -1,16 +1,17 @@
 {
   "name": "Send2Photopea",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Send image to Photopea",
   "manifest_version": 3,
-  "permissions": ["tabs", "activeTab", "contextMenus", "scripting"],
+  "permissions": ["activeTab", "contextMenus", "scripting"],
   "background": {
     "scripts": ["background.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.js"],
+      "all_frames": true
     }
   ],
   "host_permissions": [
