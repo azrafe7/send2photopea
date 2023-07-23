@@ -16,6 +16,10 @@ Should work for Image Elements, and Video Elements too. ;D
 
 Now you can also click on the extension button to send a screenshot to Photopea.
 
+I frequently use this extension in combination with my other extension (WebClipElement) to clip elements on a page and then send them to Photopea.
+
 CHANGELOG: https://github.com/azrafe7/send2photopea/blob/main/CHANGELOG.md
+
+WebClipElement: https://chrome.google.com/webstore/detail/webclipelement/ndkjiolmefobbpbiejfnihoccngfbpjh
 
 DISCLAIMER: I'm not affiliated with Photopea, just a big fan of it. :D
