@@ -23,9 +23,10 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // console.log(tabId, changeInfo, tab);
 
   if (changeInfo.status == 'loading') {
-    const enabled = changeInfo.url !== "chrome://newtab/";
-    if (changeInfo.url === "chrome://newtab/") {
-      console.warn("[Send2Photopea:BG] disabled on new-tab-page");
+    const enabled = changeInfo.url != null && !changeInfo.url.startsWith("chrome:") && !changeInfo.url.startsWith("about:");
+    // console.log(changeInfo, changeInfo.url, (changeInfo.url == null));
+    if (!enabled) {
+      console.warn(`[Send2Photopea:BG] disabled on this page`);
     }
     // console.log('set to ', enabled);
     chrome.contextMenus.update(
