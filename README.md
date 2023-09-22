@@ -1,4 +1,4 @@
-# send2photopea
+# Send 2 Photopea
 Send image to Photopea Chrome Extension
 
 ![alt text](./webstore_assets/screenshot_01.png "Screenshot")
@@ -17,7 +17,7 @@ Should work for Image Elements, and Video Elements too. ;D
 Now you can also click on the extension button to send a screenshot to Photopea.
 
 [CHROME]
-I frequently use this extension in combination with my other extension (WebClipElement) to clip elements on a page and then send them to Photopea.
+I frequently use this extension in combination with my other extension (WebClip Element) to clip elements on a page and then send them to Photopea.
 
 CHANGELOG: https://github.com/azrafe7/send2photopea/blob/main/CHANGELOG.md
 
