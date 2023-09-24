@@ -153,6 +153,10 @@ async function sendAsDataURL(info, tab, dataURL) {
 }
 
 async function sendAsUrl(info, tab) {
+  if (info.srcUrl.startsWith('chrome://')) {
+    console.log("[Send2Photopea:BG] ignored", info.srcUrl);
+    return;
+  }
   let {photopeaTab} = await getPhotopeaTab();
   // console.log(photopeaTab);
   await focusTab(photopeaTab);
@@ -197,9 +201,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
               console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
               return;
             }
-            console.log("[Send2Photopea:BG] send as " + response.sendAs);
-            console.log(response);
-            if (response.sendAs === "dataURL") {
+            console.log("[Send2Photopea:BG] response:", response);
+            console.log("[Send2Photopea:BG] send as " + response?.sendAs);
+            if (chrome.runtime.lastError) {
+              console.warn('ERROR', chrome.runtime.lastError);
+            } 
+            if (response?.sendAs === "dataURL") {
               sendAsDataURL(info, tab, response.dataURL);
             } else {
               sendAsUrl(info, tab);
