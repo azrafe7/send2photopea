@@ -19,6 +19,25 @@ chrome.runtime.onInstalled.addListener(() => {
   createContextMenu();
 });
 
+/*
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // console.log(tabId, changeInfo, tab);
+
+  if (changeInfo.status == 'loading') {
+    const enabled = changeInfo.url != null && !changeInfo.url.startsWith("chrome:") && !changeInfo.url.startsWith("about:");
+    // console.log(changeInfo, changeInfo.url, (changeInfo.url == null));
+    if (!enabled) {
+      console.warn(`[Send2Photopea:BG] disabled on this page`);
+    }
+    // console.log('set to ', enabled);
+    chrome.contextMenus.update(
+      "Send2Photopea_onImageContextMenu",
+      { enabled: enabled },
+    );
+  }
+});
+*/
+
 function blobToDataUrl(blob) {
   return new Promise(r => {
     let a = new FileReader();
