@@ -1,6 +1,12 @@
 "use strict";
 
 (() => {
+
+  const DEBUG = true;
+  let debug = {
+    log: DEBUG ? console.log.bind(console) : () => {} // log or NO_OP
+  }
+
   let manifest = chrome.runtime.getManifest();
   console.log(manifest.name + " v" + manifest.version);
 
@@ -28,13 +34,13 @@
     }
 
     var sortedTargets = [].concat(videos).concat(images).concat(others)
-    //console.log(sortedTargets);
+    //debug.log(sortedTargets);
     return sortedTargets;
   }
 
   document.addEventListener("contextmenu", function(event){
     clickedElement = event.target;
-    console.log("[Send2Photopea:CTX] clickedElement:", clickedElement);
+    debug.log("[Send2Photopea:CTX] clickedElement:", clickedElement);
     targets = findTargetsAt(event.clientX, event.clientY);
   }, true);
 
@@ -45,15 +51,15 @@
       if (TRY_FETCHING) {
         try {
           let img = await fetch(url);
-          console.log("[Send2Photopea:CTX] can fetch image " + url);
+          debug.log("[Send2Photopea:CTX] can fetch image " + url);
           response = {sendAs: "url"};
         } catch (e) {
-          console.log("[Send2Photopea:CTX] cannot fetch image " + url);
-          console.log(e);
+          debug.log("[Send2Photopea:CTX] cannot fetch image " + url);
+          debug.log(e);
           response = {sendAs: "dataURL"};
         }
       } else {
-        console.log("[Send2Photopea:CTX] don't try to fetch " + url);
+        debug.log("[Send2Photopea:CTX] don't try to fetch " + url);
         let dataURL = url.startsWith("data:image") ? url : null;
         response = {sendAs: "dataURL", dataURL: dataURL};
       }
@@ -61,7 +67,7 @@
       let videoTargets = targets.filter((target) => { target.tagName.toUpperCase() === 'VIDEO'; });
       if (videoTargets.length > 0) {
         clickedElement = videoTargets[0];
-        console.log("[Send2Photopea:CTX] change clickedElement to", clickedElement);
+        debug.log("[Send2Photopea:CTX] change clickedElement to", clickedElement);
       }
       if (clickedElement && clickedElement.tagName.toUpperCase() === 'VIDEO') {
         let canvas = document.createElement('canvas');
@@ -74,19 +80,19 @@
         canvas = null;
         ctx = null;
         response = {sendAs: "dataURL", dataURL: dataURL};
-        console.log(dataURL);
+        debug.log(dataURL);
       } else {
-        console.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", clickedElement);
+        debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", clickedElement);
         return false; // no valid target found
       }
     }
 
-    console.log("[Send2Photopea:CTX] send as " + response.sendAs);
+    debug.log("[Send2Photopea:CTX] send as " + response.sendAs);
     return response;
   }
 
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    console.log("[Send2Photopea:CTX]", msg);
+    debug.log("[Send2Photopea:CTX]", msg);
     const { event, data } = msg;
 
     if (event === "sendToPhotopea") {
