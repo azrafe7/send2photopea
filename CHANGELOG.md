@@ -1,5 +1,10 @@
  # CHANGELOG
 
+ ### v0.1.15 (24 Sep 2023)
+ - less console noise (only log if DEBUG == true)
+ - handle runtime.lastError
+ - update/fix behaviour on 'special' pages
+ 
  ### v0.1.12 (25 Jul 2023)
  - detect and disable extension's contextmenu on special pages (about:, chrome:)
  
