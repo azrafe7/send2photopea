@@ -41,7 +41,9 @@
   document.addEventListener("contextmenu", function(event){
     clickedElement = event.target;
     debug.log("[Send2Photopea:CTX] clickedElement:", clickedElement);
-    targets = findTargetsAt(event.clientX, event.clientY);
+    if (event.clientX != null && event.clientY != null) {
+      targets = findTargetsAt(event.clientX, event.clientY);
+    }
   }, true);
 
   async function fetchData(url, mediaType) {
