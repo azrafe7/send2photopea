@@ -1,6 +1,6 @@
 {
   "name": "Send 2 Photopea",
-  "version": "0.1.12",
+  "version": "0.1.17",
   "description": "Send image to Photopea",
   "manifest_version": 3,
   "permissions": ["activeTab", "contextMenus", "scripting"],
