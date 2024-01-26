@@ -88,7 +88,11 @@ async function waitForPhotopeaInitAndPostMessage(tab, message) {
 async function focusTab(tab) {
   return new Promise((resolve, reject) => {
     var updateProperties = { 'active': true };
-    chrome.tabs.update(tab.id, updateProperties, (tab) => { resolve(tab); });
+    chrome.tabs.update(tab.id, updateProperties, (tab) => { 
+      chrome.windows.update(tab.windowId, { focused:true }, (win) => {
+        resolve(tab);
+      });
+    });
   });
 }
 
