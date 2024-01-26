@@ -27,9 +27,8 @@ DISCLAIMER: I'm not affiliated with Photopea, just a big fan of it. :D
 
 
 [FIREFOX]
-IMPORTANT!!!
-
-NOTE that to make the extension work properly you need to give it the permission to "Access your data for all websites" (it's needed to fetch image data and properly send it to Photopea).
+BE SURE TO GIVE THE NECESSARY PERMISSIONS AFTER INSTALLATION:
+To make the extension work properly you need to give it the permission to "Access your data for all websites" (it's needed to fetch image data and properly send it to Photopea).
 Follow this quick tutorial if you don't know how to do it: https://github.com/azrafe7/send2photopea/issues/2.
 
 Don't worry, no data handled by the extension ever leaves your computer.
