@@ -3,7 +3,7 @@
   "version": "0.1.17",
   "description": "Send image to Photopea",
   "manifest_version": 3,
-  "permissions": ["activeTab", "contextMenus", "scripting"],
+  "permissions": ["activeTab", "contextMenus", "scripting", "storage"],
   "background": {
     "service_worker": "background.js"
   },

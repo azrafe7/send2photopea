@@ -5,6 +5,16 @@ console.log(manifest.name + " v" + manifest.version);
 
 const photopeaUrl = "https://www.photopea.com";
 
+const storage = chrome.storage.local;
+
+
+function toggleUseIncognito(info, tab) {
+  console.log("[Send2Photopea:BG] toggleUseIncognito", info, tab);
+  storage.set({ useIncognito:info.checked }, () => {
+    updateContextMenuFromSettings();
+  });
+}
+
 function createContextMenu() {
   chrome.contextMenus.removeAll(function() {
     chrome.contextMenus.create({
@@ -12,6 +22,30 @@ function createContextMenu() {
       title: "Send to Photopea",
       contexts: ["image", "video"],
     });
+    chrome.contextMenus.create({
+      id: "Send2Photopea_onToggleIncognitoContextMenu",
+      title: "Open Photopea in incognito window?",
+      type: "checkbox",
+      checked: false,
+      contexts: ["action"],
+    }, () => {
+      updateContextMenuFromSettings();
+    });
+  });
+}
+
+async function getUseIncognito() {
+  let settings = await storage.get(null);
+  let useIncognito = settings?.useIncognito ?? false;
+  console.log("getUseIncognito", useIncognito);
+  return useIncognito;  
+}
+
+function updateContextMenuFromSettings() {
+  storage.get(null, (settings) => {
+    let useIncognito = settings?.useIncognito ?? false;
+    console.log("update from settings:", settings, "useIncognito:", useIncognito);
+    chrome.contextMenus.update("Send2Photopea_onToggleIncognitoContextMenu", { checked:useIncognito });
   });
 }
 
@@ -103,7 +137,7 @@ async function getPhotopeaTab(options) {
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [photopeaTab] = await chrome.tabs.query(queryOptions);
   let [activeTab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-  let openInIncognito = true;
+  let openInIncognito = await getUseIncognito();
   if (photopeaTab === undefined || options?.openNew === true) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
     return new Promise(async (resolve, reject) => {
@@ -199,10 +233,12 @@ function openNewAsUrl(info, tab) {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
-  console.log(info.mediaType, info.srcUrl);
 
-  if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
-
+  if (info.menuItemId === 'Send2Photopea_onToggleIncognitoContextMenu') {
+    toggleUseIncognito(info, tab);
+  } else if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
+    console.log(info.mediaType, info.srcUrl);
+    
       // on the webstore page no content script is injected
       // so we sendAsUrl directly (also for inage dataUrls)
       if (tab.url.startsWith("https://chrome.google.com/webstore") || tab.url.startsWith("data:image")) {
