@@ -103,18 +103,35 @@ async function getPhotopeaTab(options) {
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [photopeaTab] = await chrome.tabs.query(queryOptions);
   let [activeTab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+  let openInIncognito = true;
   if (photopeaTab === undefined || options?.openNew === true) {
     console.log(`[Send2Photopea:BG] opening new Photopea tab...`);
-    return new Promise((resolve, reject) => {
-      chrome.tabs.create({url: photopeaUrl, index: (activeTab.index + 1)}, (tab) => {
-        chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
-          if (info.status === 'complete' && tabId === tab.id) {
-            console.log(`[Send2Photopea:BG] opened new Photopea tab (idx: ${tab.index})`);
-            chrome.tabs.onUpdated.removeListener(listener);
-            resolve({photopeaTab: tab});
-          }
-        });
+    return new Promise(async (resolve, reject) => {
+      let incognitoWindow = null;
+      let tab = null;
+      if (openInIncognito) {
+        let allWindows = await chrome.windows.getAll({ populate:true });
+        let allIncognitoWindows = allWindows.filter((win) => win.incognito == true );
+        if (allIncognitoWindows.length > 0) {
+          incognitoWindow = allIncognitoWindows[allIncognitoWindows.length - 1];
+        } else {
+          incognitoWindow = await chrome.windows.create({ incognito:true, url:photopeaUrl });
+          tab = await incognitoWindow.tabs[0];
+        }
+      } 
+      if (!tab) {
+        const windowId = openInIncognito ? incognitoWindow.id : activeTab.windowId;
+        const tabIndex = openInIncognito ? incognitoWindow.tabs.length : (activeTab.index + 1);
+        tab = await chrome.tabs.create({windowId:windowId, url: photopeaUrl, index: tabIndex});
+      }
+      chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+        if (info.status === 'complete' && tabId === tab.id) {
+          console.log(`[Send2Photopea:BG] opened new Photopea tab (idx: ${tab.index})`);
+          chrome.tabs.onUpdated.removeListener(listener);
+          resolve({photopeaTab: tab});
+        }
       });
+
     });
   }
 
