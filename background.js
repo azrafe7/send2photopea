@@ -9,7 +9,7 @@ const storage = chrome.storage.local;
 
 
 function toggleUseIncognito(info, tab) {
-  console.log("[Send2Photopea:BG] toggleUseIncognito", info, tab);
+  console.log("[Send2Photopea:BG] toggleUseIncognito info:", info, "tab:", tab);
   storage.set({ useIncognito:info.checked }, () => {
     updateContextMenuFromSettings();
   });
@@ -37,14 +37,14 @@ function createContextMenu() {
 async function getUseIncognito() {
   let settings = await storage.get(null);
   let useIncognito = settings?.useIncognito ?? false;
-  console.log("getUseIncognito", useIncognito);
+  console.log("[Send2Photopea:BG] getUseIncognito", useIncognito);
   return useIncognito;  
 }
 
 function updateContextMenuFromSettings() {
   storage.get(null, (settings) => {
     let useIncognito = settings?.useIncognito ?? false;
-    console.log("update from settings:", settings, "useIncognito:", useIncognito);
+    console.log("[Send2Photopea:BG] update from settings:", settings, "useIncognito:", useIncognito);
     chrome.contextMenus.update("Send2Photopea_onToggleIncognitoContextMenu", { checked:useIncognito });
   });
 }
@@ -232,7 +232,7 @@ function openNewAsUrl(info, tab) {
 }
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log("[Send2Photopea:BG] onContextMenuClicked:", [info, tab]);
+  console.log("[Send2Photopea:BG] onContextMenuClicked info:", info, "tab:", tab]);
 
   if (info.menuItemId === 'Send2Photopea_onToggleIncognitoContextMenu') {
     toggleUseIncognito(info, tab);
