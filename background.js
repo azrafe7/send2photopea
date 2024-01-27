@@ -239,39 +239,38 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   } else if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
     console.log(info.mediaType, info.srcUrl);
     
-      // on the webstore page no content script is injected
-      // so we sendAsUrl directly (also for inage dataUrls)
-      if (tab.url.startsWith("https://chrome.google.com/webstore") || tab.url.startsWith("data:image")) {
-        sendAsUrl(info, tab);
-      } else {
-        chrome.tabs.sendMessage(
-          tab.id,
-          {
-            event: "sendToPhotopea",
-            data: info,
-          },
-          function(response) {
-            if (response === null) {
-              response = { sendAs: "asDataURL" };
-              console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
-            } else if (response === false) {
-              console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
-              return;
-            }
-            console.log("[Send2Photopea:BG] response:", response);
-            console.log("[Send2Photopea:BG] send as " + response?.sendAs);
-            if (chrome.runtime.lastError) {
-              console.warn('ERROR', chrome.runtime.lastError);
-            } 
-            if (response?.sendAs === "dataURL") {
-              sendAsDataURL(info, tab, response.dataURL);
-            } else {
-              sendAsUrl(info, tab);
-            }
+    // on the webstore page no content script is injected
+    // so we sendAsUrl directly (also for inage dataUrls)
+    if (tab.url.startsWith("https://chrome.google.com/webstore") || tab.url.startsWith("data:image")) {
+      sendAsUrl(info, tab);
+    } else {
+      chrome.tabs.sendMessage(
+        tab.id,
+        {
+          event: "sendToPhotopea",
+          data: info,
+        },
+        function(response) {
+          if (response === null) {
+            response = { sendAs: "asDataURL" };
+            console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
+          } else if (response === false) {
+            console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
+            return;
           }
-        );
-      }
-
+          console.log("[Send2Photopea:BG] response:", response);
+          console.log("[Send2Photopea:BG] send as " + response?.sendAs);
+          if (chrome.runtime.lastError) {
+            console.warn('ERROR', chrome.runtime.lastError);
+          } 
+          if (response?.sendAs === "dataURL") {
+            sendAsDataURL(info, tab, response.dataURL);
+          } else {
+            sendAsUrl(info, tab);
+          }
+        }
+      );
+    }
   }
 });
 
