@@ -232,7 +232,7 @@ function openNewAsUrl(info, tab) {
 }
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log("[Send2Photopea:BG] onContextMenuClicked info:", info, "tab:", tab]);
+  console.log("[Send2Photopea:BG] onContextMenuClicked info:", info, "tab:", tab);
 
   if (info.menuItemId === 'Send2Photopea_onToggleIncognitoContextMenu') {
     toggleUseIncognito(info, tab);
