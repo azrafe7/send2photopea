@@ -24,7 +24,7 @@ function createContextMenu() {
     });
     chrome.contextMenus.create({
       id: "Send2Photopea_onToggleIncognitoContextMenu",
-      title: "Open Photopea in incognito window?",
+      title: "Use incognito if Photopea isn't open?",
       type: "checkbox",
       checked: false,
       contexts: ["action"],
