@@ -16,6 +16,11 @@ Should work for Image Elements, and Video Elements too. ;D
 
 Now you can also click on the extension button to send a screenshot to Photopea.
 
+... and choose to open Photopea in incognito if it's not already open (tick "Use incognito..." from the extension button context menu).
+
+Please file bugs/feature requests at https://github.com/azrafe7/send2photopea/issues
+
+
 [CHROME]
 I frequently use this extension in combination with my other extension (WebClip Element) to clip elements on a page and then send them to Photopea.
 
