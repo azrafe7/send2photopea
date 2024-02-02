@@ -2,7 +2,7 @@
 
 (() => {
 
-  const DEBUG = false;
+  const DEBUG = true;
   let debug = {
     log: DEBUG ? console.log.bind(console) : () => {} // log or NO_OP
   }
@@ -77,8 +77,15 @@
         let video = clickedElement;
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        let dataURL = await canvas.toDataURL();
+        let dataURL = null;
+        try {
+          video.pause();
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          dataURL = await canvas.toDataURL();
+          video.play();
+        } catch(error) {
+          console.log('ERROR:', error);
+        }
         canvas = null;
         ctx = null;
         response = {sendAs: "dataURL", dataURL: dataURL};
