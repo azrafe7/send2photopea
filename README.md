@@ -14,7 +14,7 @@ Browse and edit your images, faster.
 Should work for Image Elements, and Video Elements too. ;D
 (but not yet for those with overlay elements)
 
-Now you can also click on the extension button to send a screenshot to Photopea.
+Now you can also right-click on the extension button and choose "Take page screenshot..." to send a screenshot to Photopea.
 
 ... and choose to open Photopea in incognito if it's not already open (tick "Use incognito..." from the extension button context menu).
 

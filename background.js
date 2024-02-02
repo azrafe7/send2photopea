@@ -23,6 +23,11 @@ function createContextMenu() {
       contexts: ["image", "video"],
     });
     chrome.contextMenus.create({
+      id: "Send2Photopea_onPageScreenshotContextMenu",
+      title: "Take page screenshot...",
+      contexts: ["action"],
+    });
+    chrome.contextMenus.create({
       id: "Send2Photopea_onToggleIncognitoContextMenu",
       title: "Use incognito if Photopea isn't open?",
       type: "checkbox",
@@ -236,6 +241,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
   if (info.menuItemId === 'Send2Photopea_onToggleIncognitoContextMenu') {
     toggleUseIncognito(info, tab);
+  } else if (info.menuItemId === "Send2Photopea_onPageScreenshotContextMenu") {
+    console.log('[Send2Photopea:BG] onPageScreenshotContextMenu');
+    // take a screenshot of active tab and open Photopea
+    let dataURL = await takeScreenshot();
+    sendAsDataURL({mediaType: 'image'}, tab, dataURL);
   } else if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
     console.log(info.mediaType, info.srcUrl);
     
@@ -288,10 +298,7 @@ async function takeScreenshot() {
   return dataURL;
 }
 
-// take a screenshot of active tab and
 // open Photopea when clicking the browser action
 chrome.action.onClicked.addListener(async (tab) => {
-  // openPhotopea();
-  let dataURL = await takeScreenshot();
-  sendAsDataURL({mediaType: 'image'}, tab, dataURL);
+  openPhotopea();
 });
