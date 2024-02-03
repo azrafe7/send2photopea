@@ -79,10 +79,11 @@
         canvas.height = video.videoHeight;
         let dataURL = null;
         try {
-          video.pause();
+          const wasPaused = video.paused;
+          if (!wasPaused) video.pause();
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
           dataURL = await canvas.toDataURL();
-          video.play();
+          if (!wasPaused) video.play();
         } catch(error) {
           console.log('ERROR:', error);
         }
