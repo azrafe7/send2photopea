@@ -1,5 +1,22 @@
  # CHANGELOG
 
+ ### v0.3.1 (03 Feb 2024)
+ - for playing videos: pause -> draw screenshot -> play
+ 
+ ### v0.3.0 (02 Feb 2024)
+ - move screenshot functionality to action.contextmenu
+ - clicking the extension icon opens/focuses Photopea tab
+ 
+ ### v0.2.0 (27 Jan 2024)
+ - add "Use incognito if Photopea isn't open?" feature
+ - wire it to contextMenu and storage
+ 
+ ### v0.1.17 (26 Jan 2024)
+ - also focus window when focusTab()
+ 
+ ### v0.1.16 (18 Oct 2023)
+ - update Firefox version of the extension
+
  ### v0.1.15 (24 Sep 2023)
  - less console noise (only log if DEBUG == true)
  - handle runtime.lastError
