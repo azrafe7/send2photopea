@@ -24,6 +24,8 @@ Please file bugs/feature requests at https://github.com/azrafe7/send2photopea/is
 [CHROME]
 I frequently use this extension in combination with my other extension (WebClip Element) to clip elements on a page and then send them to Photopea.
 
+CODE: https://github.com/azrafe7/send2photopea
+
 CHANGELOG: https://github.com/azrafe7/send2photopea/blob/main/CHANGELOG.md
 
 WebClipElement: https://chrome.google.com/webstore/detail/webclipelement/ndkjiolmefobbpbiejfnihoccngfbpjh
@@ -37,6 +39,8 @@ To make the extension work properly you need to give it the permission to "Acces
 Follow this quick tutorial if you don't know how to do it: https://github.com/azrafe7/send2photopea/issues/2.
 
 Don't worry, no data handled by the extension ever leaves your computer.
+
+CODE: https://github.com/azrafe7/send2photopea
 
 CHANGELOG: https://github.com/azrafe7/send2photopea/blob/main/CHANGELOG.md
 
