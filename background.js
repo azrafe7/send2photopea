@@ -199,15 +199,22 @@ async function sendAsDataURL(info, tab, dataURL) {
 
   let blob = null;
   if (!dataURL) {
-    if (info.mediaType === 'image') {
-      let img = await fetch(info.srcUrl);
-      blob = await img.blob();
+    if (info.mediaType === 'image' || info.mediaType === 'video') {
+      let imgOrVideo = await fetch(info.srcUrl);
+      blob = await imgOrVideo.blob();
     }
   }
-  dataURL = dataURL ?? await blobToDataUrl(blob);
-  console.log(dataURL);
+  let message = null;
+  dataURL = dataURL ?? await blobToDataUrl(blob).catch((error) => {
+    let errorMsg = '[Send2Photopea] Failed to fetch data.';
+    errorMsg = `alert("${errorMsg}")`;
+    console.log(error);
+    message = errorMsg;
+    return null;
+  });
+  console.log('blobToDataUrl:', dataURL);
 
-  let message = `app.open('${dataURL}')`;
+  if (dataURL) message = `app.open('${dataURL}')`;
 
   waitForPhotopeaInitAndPostMessage(photopeaTab, message);
 }

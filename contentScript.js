@@ -2,7 +2,7 @@
 
 (() => {
 
-  const DEBUG = false;
+  const DEBUG = true;
   let debug = {
     log: DEBUG ? console.log.bind(console) : () => {} // log or NO_OP
   }
@@ -66,18 +66,20 @@
         response = {sendAs: "dataURL", dataURL: dataURL};
       }
     } else if (mediaType === 'video') {
-      let videoTargets = targets.filter((target) => { target.tagName.toUpperCase() === 'VIDEO'; });
+      /*let videoTargets = targets.filter((target) => { return target.tagName.toUpperCase() === 'VIDEO'; });
       if (videoTargets.length > 0) {
         clickedElement = videoTargets[0];
         debug.log("[Send2Photopea:CTX] change clickedElement to", clickedElement);
-      }
+      }*/
       if (clickedElement && clickedElement.tagName.toUpperCase() === 'VIDEO') {
         let canvas = document.createElement('canvas');
         let ctx = canvas.getContext('2d');
         let video = clickedElement;
+        // video.setAttribute('crossOrigin', 'anonymous');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         let dataURL = null;
+        let sendAnyway = true;
         try {
           const wasPaused = video.paused;
           if (!wasPaused) video.pause();
@@ -85,19 +87,20 @@
           dataURL = await canvas.toDataURL();
           if (!wasPaused) video.play();
         } catch(error) {
-          console.log('ERROR:', error);
+          console.log('[Send2Photopea:CTX] ERROR:', error);
+          sendAnyway = confirm(`[Send2Photopea] Unable to fetch video frame data.\nTry opening the whole video?`);
         }
         canvas = null;
         ctx = null;
-        response = {sendAs: "dataURL", dataURL: dataURL};
+        response = sendAnyway ? {sendAs: "dataURL", dataURL: dataURL} : false;
         debug.log(dataURL);
       } else {
         debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", clickedElement);
-        return false; // no valid target found
+        response = false; // no valid target found
       }
     }
 
-    debug.log("[Send2Photopea:CTX] send as " + response.sendAs);
+    debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
     return response;
   }
 
