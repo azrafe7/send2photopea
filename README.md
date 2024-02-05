@@ -18,6 +18,8 @@ Now you can also right-click on the extension button and choose "Take page scree
 
 ... and choose to open Photopea in incognito if it's not already open (tick "Use incognito..." from the extension button context menu).
 
+TIP: to take screenshots of YouTube videos right-click twice on the video to get past the custom context menu and to the native one that will show a "Send to Photopea" entry ;)
+
 Please file bugs/feature requests at https://github.com/azrafe7/send2photopea/issues
 
 
