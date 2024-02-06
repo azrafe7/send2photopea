@@ -38,7 +38,7 @@ function createContextMenu() {
   chrome.contextMenus.removeAll(function() {
     chrome.contextMenus.create({
       id: imageContextMenuId,
-      title: "Send to Photopea",
+      title: "Send to Photopea...",
       contexts: ["image", "video"],
     });
 
