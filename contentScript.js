@@ -79,8 +79,17 @@
           debug.log("[Send2Photopea:CTX] triggered:", target);
           lastTriggeredElement = target;
           
-          let msg = { event:'sendToPhotopea', data:target.tagName };
-          chrome.runtime.sendMessage(msg);
+          let srcUrl = target?.src;
+          let tag = target.tagName.toLowerCase();
+          let mediaType = null;
+          
+          if (tag === 'img') mediaType = 'image';
+          else if (tag === 'video') mediaType = 'video';
+          
+          if (srcUrl && mediaType) {
+            let msg = { event:'sendToPhotopea', data:{ tag:tag, srcUrl:srcUrl, mediaType:mediaType }};
+            chrome.runtime.sendMessage(msg);
+          }          
         }
         
         elementPicker.enabled = !event.triggered;

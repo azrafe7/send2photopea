@@ -278,7 +278,7 @@ function openNewAsUrl(info, tab) {
   });
 }
 
-function onSendToPhotopea(response) {
+function onSendToPhotopea(info, tab, response) {
   if (response === null) {
     response = { sendAs: "asDataURL" };
     console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
@@ -332,7 +332,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           data: info,
         },
         function(response) {
-          onSendToPhotopea(response);
+          onSendToPhotopea(info, tab, response);
         }
       );
     }
@@ -365,6 +365,18 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   if (event === 'sendToPhotopea') {
     console.log("[Send2Photopea:BG]", 'event:', event, 'data:', data);
     
+    const tab = sender.tab;
+    const info = data;
+    chrome.tabs.sendMessage(
+        tab.id,
+        {
+          event: "sendToPhotopea",
+          data: info,
+        },
+        function(response) {
+          onSendToPhotopea(info, tab, response);
+        }
+      );
   }
 });
 
