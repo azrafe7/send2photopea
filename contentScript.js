@@ -14,7 +14,7 @@
 
   const photopeaUrl = "https://www.photopea.com";
 
-  let clickedElement = null;
+  let lastTriggeredElement = null;
   let targets = [];
 
   const HIGHLIGHT_RED = "rgba(250, 70, 60, 0.5)";
@@ -32,8 +32,6 @@
   const OUTLINE_COLOR = OUTLINE_PEA;
 
   const CURSORS = ["crosshair", "copy"];
-
-  let lastTriggeredElement = null;
 
   let options = {
     container: null,
@@ -94,7 +92,7 @@
         
         elementPicker.enabled = !event.triggered;
         
-        if (!elementPicker.enabled) closePicker();
+        closePicker();
       })
     }
   }
@@ -120,13 +118,13 @@
     return sortedTargets;
   }
 
-  document.addEventListener("contextmenu", function(event){
-    clickedElement = event.target;
-    debug.log("[Send2Photopea:CTX] clickedElement:", clickedElement);
+  /*document.addEventListener("contextmenu", function(event){
+    lastTriggeredElement = event.target;
+    debug.log("[Send2Photopea:CTX] lastTriggeredElement:", lastTriggeredElement);
     if (event.clientX != null && event.clientY != null) {
       targets = findTargetsAt(event.clientX, event.clientY);
     }
-  }, true);
+  }, true);*/
 
   async function fetchData(url, mediaType) {
     let response = {};
@@ -150,13 +148,13 @@
     } else if (mediaType === 'video') {
       /*let videoTargets = targets.filter((target) => { return target.tagName.toUpperCase() === 'VIDEO'; });
       if (videoTargets.length > 0) {
-        clickedElement = videoTargets[0];
-        debug.log("[Send2Photopea:CTX] change clickedElement to", clickedElement);
+        lastTriggeredElement = videoTargets[0];
+        debug.log("[Send2Photopea:CTX] change lastTriggeredElement to", lastTriggeredElement);
       }*/
-      if (clickedElement && clickedElement.tagName.toUpperCase() === 'VIDEO') {
+      if (lastTriggeredElement && lastTriggeredElement.tagName.toUpperCase() === 'VIDEO') {
         let canvas = document.createElement('canvas');
         let ctx = canvas.getContext('2d');
-        let video = clickedElement;
+        let video = lastTriggeredElement;
         // video.setAttribute('crossOrigin', 'anonymous');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -177,7 +175,7 @@
         response = sendAnyway ? {sendAs: "dataURL", dataURL: dataURL} : false;
         debug.log(dataURL);
       } else {
-        debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", clickedElement);
+        debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", lastTriggeredElement);
         response = false; // no valid target found
       }
     }
@@ -187,8 +185,15 @@
   }
 
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    debug.log("[Send2Photopea:CTX]", msg);
+    const isTopWindow = window == window.top;
     const { event, data } = msg;
+    if (event === "togglePicker" && !isTopWindow) {
+      debug.log("[Send2Photopea:CTX] DISCARDED event:", event);
+      sendResponse(null);
+      return false;
+    }
+
+    debug.log("[Send2Photopea:CTX]", msg);
 
     if (event === "sendToPhotopea") {
       fetchData(data.srcUrl, data.mediaType).then((response) => {
@@ -197,6 +202,7 @@
         }
       });
     } else if (event === "togglePicker") {
+
       let enabled = elementPicker?.enabled ?? false;
       let toggledEnable = !enabled;
       if (toggledEnable) {
