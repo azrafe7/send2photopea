@@ -103,10 +103,10 @@
     var images = [];
     var others = [];
     for (const el of elementsAtPoint) {
-      const tag = el.tagName.toUpperCase();
-      if (tag === 'VIDEO') {
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'video') {
         videos.push(el);
-      } else if (tag === 'IMG' || tag === 'SVG' || tag === 'CANVAS') {
+      } else if (tag === 'img' || tag === 'svg' || tag === 'canvas') {
         images.push(el);
       } else {
         others.push(el);
@@ -146,12 +146,12 @@
         response = {sendAs: "dataURL", dataURL: dataURL};
       }
     } else if (mediaType === 'video') {
-      /*let videoTargets = targets.filter((target) => { return target.tagName.toUpperCase() === 'VIDEO'; });
+      /*let videoTargets = targets.filter((target) => { return target.tagName.toLowerCase() === 'video'; });
       if (videoTargets.length > 0) {
         lastTriggeredElement = videoTargets[0];
         debug.log("[Send2Photopea:CTX] change lastTriggeredElement to", lastTriggeredElement);
       }*/
-      if (lastTriggeredElement && lastTriggeredElement.tagName.toUpperCase() === 'VIDEO') {
+      if (lastTriggeredElement && lastTriggeredElement.tagName.toLowerCase() === 'video') {
         let canvas = document.createElement('canvas');
         let ctx = canvas.getContext('2d');
         let video = lastTriggeredElement;
@@ -178,6 +178,7 @@
         debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", lastTriggeredElement);
         response = false; // no valid target found
       }
+    } else if (mediaType === 'svg') {
     }
 
     debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
