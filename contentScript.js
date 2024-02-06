@@ -83,6 +83,10 @@
           
           if (tag === 'img') mediaType = 'image';
           else if (tag === 'video') mediaType = 'video';
+          else if (tag === 'svg') {
+            mediaType = 'svg';
+            srcUrl = 'inline';
+          }
           
           if (srcUrl && mediaType) {
             let msg = { event:'sendToPhotopea', data:{ tag:tag, srcUrl:srcUrl, mediaType:mediaType }};
@@ -178,7 +182,12 @@
         debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", lastTriggeredElement);
         response = false; // no valid target found
       }
-    } else if (mediaType === 'svg') {
+    } else if (mediaType === 'svg' && url === 'inline') {
+      if (lastTriggeredElement) {
+        let dataURL = 'data:image/svg+xml;utf8,' + lastTriggeredElement.outerHTML;
+        response = {sendAs: "dataURL", dataURL: dataURL};
+        debug.log(dataURL);
+      }
     }
 
     debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
