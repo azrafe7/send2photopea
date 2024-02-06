@@ -19,15 +19,17 @@
 
   const HIGHLIGHT_RED = "rgba(250, 70, 60, 0.5)";
   const HIGHLIGHT_GREEN = "rgba(17, 193, 12, 0.5)";
+  const HIGHLIGHT_PEA = "rgba(164, 191, 32, 0.5)"; //"rgba(24, 164, 151, 0.5)";
   const HIGHLIGHT_ORANGE = "rgba(255, 175, 12, 0.5)";
   const HIGHLIGHT_BLUE = "rgba(20, 80, 250, 0.5)";
-  const HIGHLIGHT_BG_COLOR = HIGHLIGHT_BLUE;
+  const HIGHLIGHT_BG_COLOR = HIGHLIGHT_PEA;
 
   const OUTLINE_RED = "rgba(250, 70, 60, 0.75)";
   const OUTLINE_GREEN = "rgba(17, 193, 12, 0.90)";
+  const OUTLINE_PEA = "rgba(164, 191, 32, 0.9)"; // "rgba(24, 164, 151, 0.90)";
   const OUTLINE_ORANGE = "rgba(255, 175, 0, 0.9)";
   const OUTLINE_BLUE = "rgba(20, 140, 200, 0.9)";
-  const OUTLINE_COLOR = OUTLINE_BLUE;
+  const OUTLINE_COLOR = OUTLINE_PEA;
 
   const CURSORS = ["crosshair", "copy"];
 
