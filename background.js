@@ -8,6 +8,19 @@ const photopeaUrl = "https://www.photopea.com";
 const storage = chrome.storage.local;
 
 
+async function sendMessageToTab(tabId, msg) {
+  return chrome.tabs.sendMessage(
+    tabId,
+    msg,
+    (response) => {
+      let lastError = chrome.runtime.lastError;
+      if (lastError) {
+        console.warn('Whoops...', lastError.message);
+      }
+    }
+  );
+}
+
 function toggleUseIncognito(info, tab) {
   console.log("[Send2Photopea:BG] toggleUseIncognito info:", info, "tab:", tab);
   storage.set({ useIncognito:info.checked }, () => {
@@ -15,20 +28,39 @@ function toggleUseIncognito(info, tab) {
   });
 }
 
+// context menu IDs
+const imageContextMenuId = 'Send2Photopea_onImageContextMenu';
+const togglePickerContextMenuId = 'Send2Photopea_onTogglePickerContextMenu';
+const pageScreenshotContextMenuId = 'Send2Photopea_onPageScreenshotContextMenu';
+const toggleIncognitoContextMenuId = 'Send2Photopea_onToggleIncognitoContextMenu';
+
 function createContextMenu() {
   chrome.contextMenus.removeAll(function() {
     chrome.contextMenus.create({
-      id: "Send2Photopea_onImageContextMenu",
+      id: imageContextMenuId,
       title: "Send to Photopea",
       contexts: ["image", "video"],
     });
+
     chrome.contextMenus.create({
-      id: "Send2Photopea_onPageScreenshotContextMenu",
+      id: togglePickerContextMenuId,
+      title: "Toggle element picker...",
+      contexts: ["action"],
+    }, () => {
+      // console.log("create");
+      if (chrome.runtime.lastError) {
+        console.warn('Whoops...', chrome.runtime.lastError.message);
+      }      
+    });
+
+    chrome.contextMenus.create({
+      id: pageScreenshotContextMenuId,
       title: "Take page screenshot...",
       contexts: ["action"],
     });
+
     chrome.contextMenus.create({
-      id: "Send2Photopea_onToggleIncognitoContextMenu",
+      id: toggleIncognitoContextMenuId,
       title: "Use incognito if Photopea isn't open?",
       type: "checkbox",
       checked: false,
@@ -50,7 +82,7 @@ function updateContextMenuFromSettings() {
   storage.get(null, (settings) => {
     let useIncognito = settings?.useIncognito ?? false;
     console.log("[Send2Photopea:BG] update from settings:", settings, "useIncognito:", useIncognito);
-    chrome.contextMenus.update("Send2Photopea_onToggleIncognitoContextMenu", { checked:useIncognito });
+    chrome.contextMenus.update(toggleIncognitoContextMenuId, { checked:useIncognito });
   });
 }
 
@@ -70,7 +102,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
     // console.log('set to ', enabled);
     chrome.contextMenus.update(
-      "Send2Photopea_onImageContextMenu",
+      imageContextMenuId,
       { enabled: enabled },
     );
   }
@@ -246,15 +278,24 @@ function openNewAsUrl(info, tab) {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked info:", info, "tab:", tab);
 
-  if (info.menuItemId === 'Send2Photopea_onToggleIncognitoContextMenu') {
+  if (info.menuItemId === togglePickerContextMenuId) {
+    console.log('[Send2Photopea:BG] toggle picker...');
+    sendMessageToTab(
+      tab.id,
+      {
+        event: "togglePicker",
+        data: null,
+      }
+    );
+  } else if (info.menuItemId === toggleIncognitoContextMenuId) {
     toggleUseIncognito(info, tab);
-  } else if (info.menuItemId === "Send2Photopea_onPageScreenshotContextMenu") {
-    console.log('[Send2Photopea:BG] onPageScreenshotContextMenu');
+  } else if (info.menuItemId === pageScreenshotContextMenuId) {
+    console.log('[Send2Photopea:BG] ' + pageScreenshotContextMenuId);
     // take a screenshot of active tab and open Photopea
     let dataURL = await takeScreenshot();
     sendAsDataURL({mediaType: 'image'}, tab, dataURL);
-  } else if (info.menuItemId === "Send2Photopea_onImageContextMenu") {
-    console.log(info.mediaType, info.srcUrl);
+  } else if (info.menuItemId === imageContextMenuId) {
+    console.log('[Send2Photopea:BG] ' + imageContextMenuId, 'mediaType:', info.mediaType, 'srcUrl:', info.srcUrl);
     
     // on the webstore page no content script is injected
     // so we sendAsUrl directly (also for inage dataUrls)
