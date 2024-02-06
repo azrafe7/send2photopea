@@ -17,6 +17,9 @@ async function sendMessageToTab(tabId, msg) {
       if (lastError) {
         console.warn('Whoops...', lastError.message);
       }
+      if (response != null) {
+        console.log('[Send2Photopea:BG] sendMessageToTab response:', response);
+      }
     }
   );
 }

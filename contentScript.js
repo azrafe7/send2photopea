@@ -197,6 +197,7 @@
       } else {
         closePicker();
       }
+      sendResponse({ event:'pickerEnabled', data:toggledEnable });
     }
 
     return true; // keep port alive
