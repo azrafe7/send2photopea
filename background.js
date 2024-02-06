@@ -275,6 +275,26 @@ function openNewAsUrl(info, tab) {
   });
 }
 
+function onSendToPhotopea(response) {
+  if (response === null) {
+    response = { sendAs: "asDataURL" };
+    console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
+  } else if (response === false) {
+    console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
+    return;
+  }
+  console.log("[Send2Photopea:BG] response:", response);
+  console.log("[Send2Photopea:BG] send as " + response?.sendAs);
+  if (chrome.runtime.lastError) {
+    console.warn('ERROR', chrome.runtime.lastError);
+  } 
+  if (response?.sendAs === "dataURL") {
+    sendAsDataURL(info, tab, response.dataURL);
+  } else {
+    sendAsUrl(info, tab);
+  }
+}
+
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[Send2Photopea:BG] onContextMenuClicked info:", info, "tab:", tab);
 
@@ -309,23 +329,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           data: info,
         },
         function(response) {
-          if (response === null) {
-            response = { sendAs: "asDataURL" };
-            console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
-          } else if (response === false) {
-            console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
-            return;
-          }
-          console.log("[Send2Photopea:BG] response:", response);
-          console.log("[Send2Photopea:BG] send as " + response?.sendAs);
-          if (chrome.runtime.lastError) {
-            console.warn('ERROR', chrome.runtime.lastError);
-          } 
-          if (response?.sendAs === "dataURL") {
-            sendAsDataURL(info, tab, response.dataURL);
-          } else {
-            sendAsUrl(info, tab);
-          }
+          onSendToPhotopea(response);
         }
       );
     }
@@ -350,3 +354,14 @@ async function takeScreenshot() {
 chrome.action.onClicked.addListener(async (tab) => {
   openPhotopea();
 });
+
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+  console.log("[Send2Photopea:BG]", msg);
+  const { event, data } = msg;
+
+  if (event === 'sendToPhotopea') {
+    console.log("[Send2Photopea:BG]", 'event:', event, 'data:', data);
+    
+  }
+});
+

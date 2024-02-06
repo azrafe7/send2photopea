@@ -77,6 +77,10 @@
         event.triggered = event.triggered ?? event.button == 0; // only proceed if left mouse button was pressed or "event.triggered" was set
         if (event.triggered) {
           debug.log("[Send2Photopea:CTX] triggered:", target);
+          lastTriggeredElement = target;
+          
+          let msg = { event:'sendToPhotopea', data:target.tagName };
+          chrome.runtime.sendMessage(msg);
         }
         
         elementPicker.enabled = !event.triggered;
