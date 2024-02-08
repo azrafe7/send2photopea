@@ -8,7 +8,7 @@
   }
 
   let manifest = chrome.runtime.getManifest();
-  console.log(manifest.name + " v" + manifest.version);
+  console.log(manifest.name + " v" + manifest.version + (DEBUG ? ' [DEBUG]' : ''));
 
   const TRY_FETCHING = false;
 
