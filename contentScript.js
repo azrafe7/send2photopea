@@ -45,6 +45,7 @@
     transition: "",
     ignoreElements: [],
     action: {},
+    onHighlightedChanged: onHighlightedChanged,
     hoverBoxInfoId: 'send2photopea_picker_info',
   }
 
@@ -98,6 +99,26 @@
         
         closePicker();
       })
+    }
+  }
+  
+  function isActionableElement(element) {
+    return ['video', 'img', 'svg'].includes(element.tagName.toLowerCase());
+  }
+  
+  function onHighlightedChanged(changeInfo) {
+    debug.log("[Send2Photopea:CTX] onHighlightedChanged:", changeInfo);
+    const { oldElement, newElement } = changeInfo;
+    if (isActionableElement(newElement)) {
+      elementPicker.background = HIGHLIGHT_BG_COLOR;
+      elementPicker.outlineColor = OUTLINE_COLOR;
+      elementPicker.hoverBoxInfo.style.fontWeight = 'bold';
+      elementPicker.hoverBox.style.cursor = CURSORS[0];
+    } else {
+      elementPicker.background = HIGHLIGHT_ORANGE;
+      elementPicker.outlineColor = OUTLINE_ORANGE;
+      elementPicker.hoverBoxInfo.style.fontWeight = 'normal';
+      elementPicker.hoverBox.style.cursor = 'not-allowed';
     }
   }
   
