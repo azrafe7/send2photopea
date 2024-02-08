@@ -24,7 +24,7 @@
   }
 
   class ElementPicker {
-    VERSION = "0.3.0";
+    VERSION = "0.3.1";
 
     constructor(options) {
       // MUST create hover box first before applying options
@@ -35,6 +35,7 @@
       this.hoverBox.style.setProperty("z-index", 2147483647, "important");
 
       this._actionEvent = null;
+      this._oldHighlightedElement = null;
 
       this.hoverBoxInfo = document.createElement("div");
       this.hoverInfo = {
@@ -77,6 +78,7 @@
         transition: "all 150ms ease", // set to "" (empty string) to disable
         ignoreElements: [document.body],
         action: {},
+        onHighlightedChanged: null, // ({ oldElement, newElement }) => {}
         hoverBoxInfoId: 'EP_hoverBoxInfo',
       }
       const mergedOptions = {
@@ -172,6 +174,15 @@
       }
 
       this.highlight = (target) => {
+        if (this._oldHighlightedElement != target) {
+          const changeInfo = { oldElement:this._oldHighlightedElement, newElement:target };
+          // console.log("old:", this._oldHighlightedElement, "new:", target);
+          if (this.onHighlightedChanged != null) {
+            this.onHighlightedChanged(changeInfo);
+          }
+        }
+        this._oldHighlightedElement = target;
+
         this.hoverInfo = this.getElementInfo(target);
         const info = this.hoverInfo;
         
@@ -397,6 +408,18 @@
         throw new Error("action must be an object!");
       }
     }
+    
+    get onHighlightedChanged() {
+      return this._onHighlightedChanged;
+    }
+    set onHighlightedChanged(value) {
+      if (value == null || typeof value === 'function') {
+        this._onHighlightedChanged = value;
+      } else {
+        throw new Error("onHighlightedChanged must be a function!");
+      }
+    }
+    
     close() {
       if (this._triggerListener) {
         this.container.removeEventListener(this.action.trigger, this._triggerListener);
