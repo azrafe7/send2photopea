@@ -345,6 +345,13 @@
       this._redetectMouseMove();
     }
     
+    get outlineColor() {
+      return this._outlineColor;
+    }
+    set outlineColor(value) {
+      this._outlineColor = value;
+    }
+    
     get transition() {
       return this._transition;
     }
