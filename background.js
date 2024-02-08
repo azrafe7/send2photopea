@@ -34,6 +34,7 @@ function toggleUseIncognito(info, tab) {
 // context menu IDs
 const imageContextMenuId = 'Send2Photopea_onImageContextMenu';
 const togglePickerContextMenuId = 'Send2Photopea_onTogglePickerContextMenu';
+const separatprContextMenuId = 'Send2Photopea_separatorContextMenu';
 const pageScreenshotContextMenuId = 'Send2Photopea_onPageScreenshotContextMenu';
 const toggleIncognitoContextMenuId = 'Send2Photopea_onToggleIncognitoContextMenu';
 
@@ -48,6 +49,17 @@ function createContextMenu() {
     chrome.contextMenus.create({
       id: togglePickerContextMenuId,
       title: "Toggle element picker...",
+      contexts: ["action"],
+    }, () => {
+      // console.log("create");
+      if (chrome.runtime.lastError) {
+        console.warn('Whoops...', chrome.runtime.lastError.message);
+      }      
+    });
+
+    chrome.contextMenus.create({
+      id: separatprContextMenuId,
+      type: 'separator',
       contexts: ["action"],
     }, () => {
       // console.log("create");
