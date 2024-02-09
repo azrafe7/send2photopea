@@ -117,13 +117,15 @@
     if (isActionableElement(newElement)) {
       elementPicker.background = HIGHLIGHT_BG_COLOR;
       elementPicker.outlineColor = OUTLINE_COLOR;
-      elementPicker.hoverBoxInfo.style.fontWeight = 'bold';
       elementPicker.hoverBox.style.cursor = CURSORS[0];
+      elementPicker.hoverBoxInfo.style.fontWeight = '900';
+      elementPicker.hoverBoxInfo.style.background = 'rgba(0,0,0,.95)';
     } else {
       elementPicker.background = HIGHLIGHT_ORANGE;
       elementPicker.outlineColor = OUTLINE_ORANGE;
-      elementPicker.hoverBoxInfo.style.fontWeight = 'normal';
       elementPicker.hoverBox.style.cursor = 'not-allowed';
+      elementPicker.hoverBoxInfo.style.fontWeight = 'normal';
+      elementPicker.hoverBoxInfo.style.background = 'rgba(0,0,0,.5)';
     }
   }
   
