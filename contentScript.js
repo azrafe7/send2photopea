@@ -163,6 +163,7 @@
     let ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
+    debug.log("[Send2Photopea:CTX] tryToDataURL element:", element, 'canvasOptions:', canvasOptions);
     try {
       ctx.drawImage(element, offsetX, offsetY, canvas.width, canvas.height);
       dataURL = await canvas.toDataURL();
@@ -226,7 +227,25 @@
         debug.log(dataURL);
       }
     } else if (mediaType === 'canvas' && url === 'tryToDataURL') {
-      debug.log("[Send2Photopea:CTX] EXPERIMENTAL Canvas... [TODO]");
+      if (lastTriggeredElement && lastTriggeredElement.tagName.toLowerCase() === 'canvas') {
+        let canvas = lastTriggeredElement;
+        debug.log("[Send2Photopea:CTX] EXPERIMENTAL canvas:", canvas);
+        let dataURL = null;
+        const width = canvas.width;
+        const height = canvas.height;
+        response = false;
+        try {
+          const canvasOptions = { offsetX:0, offsetY:0, width:canvas.width, height:canvas.height };
+          response = false;
+          dataURL = await tryToDataURL(canvas, canvasOptions);
+          response = dataURL?.length > 0 ? {sendAs: "dataURL", dataURL: dataURL} : false;
+        } catch(error) {
+          console.log('[Send2Photopea:CTX] ERROR:', error);
+          alert(`[Send2Photopea] Unable to fetch canvas data.\n\nERROR: ${error}`);
+          response = false;
+        }
+        debug.log(dataURL);
+      }
     }
 
     debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
