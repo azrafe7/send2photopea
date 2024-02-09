@@ -114,6 +114,7 @@
   function onHighlightedChanged(changeInfo) {
     debug.log("[Send2Photopea:CTX] onHighlightedChanged:", changeInfo);
     const { oldElement, newElement } = changeInfo;
+    elementPicker.hoverBoxInfo.style.fontFamily = 'monospace, monospace';
     if (isActionableElement(newElement)) {
       elementPicker.background = HIGHLIGHT_BG_COLOR;
       elementPicker.outlineColor = OUTLINE_COLOR;
