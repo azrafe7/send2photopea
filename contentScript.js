@@ -82,11 +82,16 @@
           let tag = target.tagName.toLowerCase();
           let mediaType = null;
           
-          if (tag === 'img') mediaType = 'image';
-          else if (tag === 'video') mediaType = 'video';
-          else if (tag === 'svg') {
-            mediaType = 'svg';
-            srcUrl = 'inline';
+          if (isActionableElement(target)) {
+            if (tag === 'img') mediaType = 'image';
+            else if (tag === 'video') mediaType = 'video';
+            else if (tag === 'svg') {
+              mediaType = 'svg';
+              srcUrl = 'inline';
+            } else if (tag === 'canvas') {
+              mediaType = 'canvas';
+              srcUrl = 'tryToDataURL';
+            }
           }
           
           if (srcUrl && mediaType) {
@@ -103,7 +108,7 @@
   }
   
   function isActionableElement(element) {
-    return ['video', 'img', 'svg'].includes(element.tagName.toLowerCase());
+    return ['video', 'img', 'svg', 'canvas'].includes(element.tagName.toLowerCase());
   }
   
   function onHighlightedChanged(changeInfo) {
@@ -151,6 +156,23 @@
     }
   }, true);*/
 
+  async function tryToDataURL(element, canvasOptions={}) {
+    const { offsetX, offsetY, width, height } = canvasOptions;
+    let dataURL = null;
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+    try {
+      ctx.drawImage(element, offsetX, offsetY, canvas.width, canvas.height);
+      dataURL = await canvas.toDataURL();
+      return dataURL;
+    } catch(error) {
+      console.log('[Send2Photopea:CTX] tryToDataURL ERROR:', error);
+      throw e;
+    }
+  }
+  
   async function fetchData(url, mediaType) {
     let response = {};
 
@@ -177,26 +199,20 @@
         debug.log("[Send2Photopea:CTX] change lastTriggeredElement to", lastTriggeredElement);
       }*/
       if (lastTriggeredElement && lastTriggeredElement.tagName.toLowerCase() === 'video') {
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
         let video = lastTriggeredElement;
         // video.setAttribute('crossOrigin', 'anonymous');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
         let dataURL = null;
         let sendAnyway = true;
         try {
           const wasPaused = video.paused;
           if (!wasPaused) video.pause();
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          dataURL = await canvas.toDataURL();
+          const canvasOptions = { offsetX:0, offsetY:0, width:video.videoWidth, height:video.videoHeight };
+          dataURL = await tryToDataURL(video, canvasOptions);
           if (!wasPaused) video.play();
         } catch(error) {
           console.log('[Send2Photopea:CTX] ERROR:', error);
           sendAnyway = confirm(`[Send2Photopea] Unable to fetch video frame data.\nTry opening the whole video?`);
         }
-        canvas = null;
-        ctx = null;
         response = sendAnyway ? {sendAs: "dataURL", dataURL: dataURL} : false;
         debug.log(dataURL);
       } else {
@@ -209,6 +225,8 @@
         response = {sendAs: "dataURL", dataURL: dataURL};
         debug.log(dataURL);
       }
+    } else if (mediaType === 'canvas' && url === 'tryToDataURL') {
+      debug.log("[Send2Photopea:CTX] EXPERIMENTAL Canvas... [TODO]");
     }
 
     debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
