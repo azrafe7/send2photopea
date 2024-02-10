@@ -225,9 +225,11 @@
       }
     } else if (mediaType === 'svg' && url === 'inline') {
       if (lastTriggeredElement) {
+        // for better compatibility: send encoded instead of plain, to dodge errors with some files
+        let encodedDataURL = 'data:image/svg+xml;utf8,' + encodeURIComponent(lastTriggeredElement.outerHTML);
         let dataURL = 'data:image/svg+xml;utf8,' + lastTriggeredElement.outerHTML;
-        response = {sendAs: "dataURL", dataURL: dataURL};
-        debug.log(dataURL);
+        response = {sendAs: "dataURL", dataURL: encodedDataURL};
+        debug.log('SVG', { dataURL:dataURL, encodedDataURL:encodedDataURL });
       }
     } else if (mediaType === 'canvas' && url === 'tryToDataURL') {
       if (lastTriggeredElement && lastTriggeredElement.tagName.toLowerCase() === 'canvas') {
