@@ -151,13 +151,13 @@
     return sortedTargets;
   }
 
-  /*document.addEventListener("contextmenu", function(event){
+  document.addEventListener("contextmenu", function(event){
     lastTriggeredElement = event.target;
-    debug.log("[Send2Photopea:CTX] lastTriggeredElement:", lastTriggeredElement);
+    debug.log("[Send2Photopea:CTX] [onContextMenu] lastTriggeredElement:", lastTriggeredElement);
     if (event.clientX != null && event.clientY != null) {
       targets = findTargetsAt(event.clientX, event.clientY);
     }
-  }, true);*/
+  }, true);
 
   async function tryToDataURL(element, canvasOptions={}) {
     const { offsetX, offsetY, width, height } = canvasOptions;
@@ -173,13 +173,14 @@
       return dataURL;
     } catch(error) {
       console.log('[Send2Photopea:CTX] tryToDataURL ERROR:', error);
-      throw e;
+      throw error;
     }
   }
   
   async function fetchData(url, mediaType) {
     let response = {};
-
+    debug.log("[Send2Photopea:CTX] fetchData:", { url:url, mediaType:mediaType });
+  
     if (mediaType === 'image') {
       if (TRY_FETCHING) {
         try {
@@ -197,11 +198,11 @@
         response = {sendAs: "dataURL", dataURL: dataURL};
       }
     } else if (mediaType === 'video') {
-      /*let videoTargets = targets.filter((target) => { return target.tagName.toLowerCase() === 'video'; });
+      let videoTargets = targets.filter((target) => { return target.tagName.toLowerCase() === 'video'; });
       if (videoTargets.length > 0) {
         lastTriggeredElement = videoTargets[0];
         debug.log("[Send2Photopea:CTX] change lastTriggeredElement to", lastTriggeredElement);
-      }*/
+      }
       if (lastTriggeredElement && lastTriggeredElement.tagName.toLowerCase() === 'video') {
         let video = lastTriggeredElement;
         // video.setAttribute('crossOrigin', 'anonymous');
