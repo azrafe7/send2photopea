@@ -244,25 +244,36 @@ async function sendAsDataURL(info, tab, dataURL) {
   // console.log(photopeaTab);
   await focusTab(photopeaTab);
 
+  let message = null;
   let blob = null;
+  let fetchSuccess = true;
   if (!dataURL) {
     if (info.mediaType === 'image' || info.mediaType === 'video') {
-      let imgOrVideo = await fetch(info.srcUrl);
-      blob = await imgOrVideo.blob();
+      try {
+        let imgOrVideo = await fetch(info.srcUrl);
+        blob = await imgOrVideo.blob();
+      } catch (error) {
+        console.warn("sendAsDataURL error while fetching:", error);
+        if (typeof error === 'TypeError') {
+          fetchSuccess = false;
+          message = 'alert("[Send2Photopea] Error while fetching.")';
+        }
+      }        
     }
   }
-  let message = null;
-  dataURL = dataURL ?? await blobToDataUrl(blob).catch((error) => {
-    let errorMsg = '[Send2Photopea] Failed to fetch data.';
-    errorMsg = `alert("${errorMsg}")`;
-    console.log(error);
-    message = errorMsg;
-    return null;
-  });
-  console.log('blobToDataUrl:', dataURL);
+  if (fetchSuccess) {
+    dataURL = dataURL ?? await blobToDataUrl(blob).catch((error) => {
+      let errorMsg = '[Send2Photopea] Failed to fetch data.';
+      errorMsg = `alert("${errorMsg}")`;
+      console.log(error);
+      message = errorMsg;
+      return null;
+    });
+    console.log('blobToDataUrl:', dataURL);
 
-  if (dataURL) message = `app.open('${dataURL}')`;
-
+    if (dataURL) message = `app.open('${dataURL}')`;
+  }
+  
   waitForPhotopeaInitAndPostMessage(photopeaTab, message);
 }
 
@@ -295,7 +306,7 @@ function onSendToPhotopea(info, tab, response) {
     response = { sendAs: "asDataURL" };
     console.warn(`[Send2Photopea:BG] response was undefined. Setting sendAs to '${response.sendAs}'.`);
   } else if (response === false) {
-    console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found.`);
+    console.warn(`[Send2Photopea:BG] response was false. Meaning no element could be found, or properly handled.`);
     return;
   }
   console.log("[Send2Photopea:BG] response:", response);

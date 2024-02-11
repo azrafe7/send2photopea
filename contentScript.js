@@ -215,13 +215,18 @@
           if (!wasPaused) video.play();
         } catch(error) {
           console.log('[Send2Photopea:CTX] ERROR:', error);
-          sendAnyway = confirm(`[Send2Photopea] Unable to fetch video frame data.\nTry opening the whole video?`);
+          sendAnyway = confirm(`[Send2Photopea] Unable to fetch video frame data.\nTry opening the whole video (this may take a while)?`);
         }
         response = sendAnyway ? {sendAs: "dataURL", dataURL: dataURL} : false;
         debug.log(dataURL);
       } else {
-        debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was ", lastTriggeredElement);
+        debug.log("[Send2Photopea:CTX][WARN] returning 'false': expected video element, but was", lastTriggeredElement);
         response = false; // no valid target found
+        alert("[Send2Photopea] Unable to fetch video frame.");
+        /*let dataURL = null;
+        let sendAnyway = confirm(`[Send2Photopea] Unable to fetch video frame data.\nTry opening the whole video (this may take a while)?`);
+        response = sendAnyway ? {sendAs: "dataURL", dataURL: dataURL} : false;
+        debug.log(dataURL);*/
       }
     } else if (mediaType === 'svg' && url === 'inline') {
       if (lastTriggeredElement) {
@@ -253,25 +258,27 @@
       }
     }
 
-    debug.log("[Send2Photopea:CTX] send as " + response?.sendAs);
+    debug.log("[Send2Photopea:CTX] send response:", response);
     return response;
   }
 
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const isTopWindow = window == window.top;
     const { event, data } = msg;
+    debug.log("[Send2Photopea:CTX] onMessage event:", event, "data:", data);
+
     if (event === "togglePicker" && !isTopWindow) {
       debug.log("[Send2Photopea:CTX] DISCARDED event:", event);
       sendResponse(null);
       return false;
     }
 
-    debug.log("[Send2Photopea:CTX]", msg);
-
     if (event === "sendToPhotopea") {
       fetchData(data.srcUrl, data.mediaType).then((response) => {
         if (response !== false) { // only sendResponse if valid target found (response !== false)
           sendResponse(response);
+        } else {
+          sendResponse(false);
         }
       });
     } else if (event === "togglePicker") {
