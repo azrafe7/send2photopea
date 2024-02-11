@@ -114,13 +114,12 @@
   function onHighlightedChanged(changeInfo) {
     debug.log("[Send2Photopea:CTX] onHighlightedChanged:", changeInfo);
     const { oldElement, newElement } = changeInfo;
-    elementPicker.hoverBoxInfo.style.fontFamily = 'monospace, monospace';
     if (isActionableElement(newElement)) {
       elementPicker.background = HIGHLIGHT_BG_COLOR;
       elementPicker.outlineColor = OUTLINE_COLOR;
       elementPicker.hoverBox.style.cursor = CURSORS[0];
-      elementPicker.hoverBoxInfo.style.fontWeight = '900';
-      elementPicker.hoverBoxInfo.style.background = 'rgba(0,0,0,.95)';
+      elementPicker.hoverBoxInfo.style.fontWeight = 'bold';
+      elementPicker.hoverBoxInfo.style.background = 'rgba(0,0,0,.75)';
     } else {
       elementPicker.background = HIGHLIGHT_ORANGE;
       elementPicker.outlineColor = OUTLINE_ORANGE;
