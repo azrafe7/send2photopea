@@ -1,19 +1,29 @@
  # CHANGELOG
 
+ ### v0.3.99 (12 Feb 2024)
+ - add Element picker (via action contextmenu)
+ - rework VIDEO support
+ - experimental CANVAS support
+ - experimental SVG (inline) support (encoded)
+ - change style hoverBoxInfo style on highlighted
+ - better handling of dataURL (and more debug.log)
+ - update ElementPicker (wire onHighlightChanged)
+ - something more I forgot...
+
  ### v0.3.1 (03 Feb 2024)
  - for playing videos: pause -> draw screenshot -> play
- 
+
  ### v0.3.0 (02 Feb 2024)
  - move screenshot functionality to action.contextmenu
  - clicking the extension icon opens/focuses Photopea tab
- 
+
  ### v0.2.0 (27 Jan 2024)
  - add "Use incognito if Photopea isn't open?" feature
  - wire it to contextMenu and storage
- 
+
  ### v0.1.17 (26 Jan 2024)
  - also focus window when focusTab()
- 
+
  ### v0.1.16 (18 Oct 2023)
  - update Firefox version of the extension
 
@@ -21,16 +31,16 @@
  - less console noise (only log if DEBUG == true)
  - handle runtime.lastError
  - update/fix behaviour on 'special' pages
- 
+
  ### v0.1.12 (25 Jul 2023)
  - detect and disable extension's contextmenu on special pages (about:, chrome:)
- 
+
  ### v0.1.11 (23 Jul 2023)
  - run in all_frames
  - better handle videos (find video at clicked location)
  - only send response if response !== false (no valid target found)
  - [firefox] remove "tabs" permission ("activeTab" should suffice)
- 
+
  ### v0.1.10 (21 Jul 2023)
  - remove "cross_origin_opener_policy" directive
  - wait for tab to load when opening new Photopea tab
